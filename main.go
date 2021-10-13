@@ -27,7 +27,7 @@ func main() {
 		return
 	}
 
-	appID, ok = os.LookupEnv("APP_INSTALLATION_ID")
+	appInstId, ok = os.LookupEnv("APP_INSTALLATION_ID")
 	if !ok {
 		fmt.Printf("::error title=App installation ID not set::App installation ID envrionment var is not set")
 		return
