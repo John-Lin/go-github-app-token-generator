@@ -7,6 +7,9 @@ inputs:
   app-id:
     description: GitHub App ID
     required: true
+  app-installation-id :
+    description: GitHub Installation ID
+    required: true
 outputs:
   token:
     description: Installation access token for the GitHub App
