@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -11,12 +10,11 @@ import (
 	"time"
 )
 
-var (
-	githubURL = "https://api.github.com/app/installations"
-)
+const githubURL = "https://api.github.com/app/installations"
 
+//  Get installation token from github.
+//
 //  curl -i -X POST -H "Authorization: Bearer $TOKEN" -H "Accept: " https://api.github.com/app/installations/19557896/access_tokens
-
 // {
 //   "token": "asdf",
 //   "expires_at": "2021-09-17T14:00:44Z",
@@ -27,10 +25,8 @@ var (
 //   },
 //   "repository_selection": "selected"
 // }
-
-func GetInstallationToken(token string) (*string, error) {
-
-	u := strings.Join([]string{githubURL, appInstId, "access_tokens"}, "/")
+func getInstallationToken(appInstID, token string) (string, error) {
+	u := strings.Join([]string{githubURL, appInstID, "access_tokens"}, "/")
 
 	var resBody struct {
 		Token       string    `json:"token"`
@@ -47,9 +43,7 @@ func GetInstallationToken(token string) (*string, error) {
 
 	req, err := http.NewRequest("POST", u, nil)
 	if err != nil {
-		//TODO handle error
-		fmt.Println("something went wrong", err)
-		return nil, err
+		return "", err
 	}
 
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))
@@ -57,8 +51,7 @@ func GetInstallationToken(token string) (*string, error) {
 
 	res, err := client.Do(req)
 	if err != nil {
-		fmt.Printf("Request Error:%s\n", err)
-		return nil, err
+		return "", err
 	}
 
 	b, _ := ioutil.ReadAll(res.Body)
@@ -66,12 +59,12 @@ func GetInstallationToken(token string) (*string, error) {
 	if res.StatusCode < 200 || res.StatusCode > 300 {
 		fmt.Println(res.StatusCode)
 		log.Println(string(b))
-		return nil, errors.New("Invalid response code")
+		return "", fmt.Errorf("error response. status: %s, msg: %s", res.Status, string(b))
 	}
 
 	if err := json.Unmarshal(b, &resBody); err != nil {
-		log.Printf("Problem unmarshalling err:%s\n", err)
+		return "", err
 	}
 
-	return &resBody.Token, nil
+	return resBody.Token, nil
 }

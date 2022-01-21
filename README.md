@@ -4,7 +4,11 @@ There are a lot of other workflows that do the same thing, go use them instead. 
 
 # Setup
 
-This actions requires three secrets two be set, `APP_PRIVATE_KEY`, `APP_ID` ,and `APP_INSTALLATION_ID` as inputs to this workflow. The `APP_PRIVATE_KEY` should be base64 encoded then set as an environment variable.
+This action requires three environment variables as inputs.
+
+- `APP_PRIVATE_KEY`: base64 encoded private key
+- `APP_ID`: application id
+- `APP_INSTALLATION_ID`: application installation id
 
 ## Usage
 

@@ -9,8 +9,7 @@ import (
 )
 
 // Function to sign a jwt via the private key
-func IssueJWTFromPEM(key *rsa.PrivateKey) string {
-
+func issueJWTFromPEM(appID string, key *rsa.PrivateKey) string {
 	claims := &jwt.StandardClaims{
 		IssuedAt:  time.Now().Add(-1 * time.Minute).Unix(),
 		ExpiresAt: time.Now().Add(time.Minute * 10).Unix(),
