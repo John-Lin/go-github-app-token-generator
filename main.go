@@ -9,56 +9,43 @@ import (
 	"os"
 )
 
-var (
-	appID, appInstId string
-)
-
 func main() {
-
 	b, ok := os.LookupEnv("APP_PRIVATE_KEY")
 	if !ok {
-		fmt.Printf("::error title=Private key env not set::Private key env variable has not been set")
-		return
+		setFailed("Private key env not set", "Environment variable APP_PRIVATE_KEY is not set")
 	}
 
-	appID, ok = os.LookupEnv("APP_ID")
+	appID, ok := os.LookupEnv("APP_ID")
 	if !ok {
-		fmt.Printf("::error title=App ID not set::App ID envrionment var is not set")
-		return
+		setFailed("App ID not set", "Environment variable APP_ID is not set")
 	}
 
-	appInstId, ok = os.LookupEnv("APP_INSTALLATION_ID")
+	appInstId, ok := os.LookupEnv("APP_INSTALLATION_ID")
 	if !ok {
-		fmt.Printf("::error title=App installation ID not set::App installation ID envrionment var is not set")
-		return
+		setFailed("App installation ID not set", "Environment variable APP_INSTALLATION_ID is not set")
 	}
 
 	pemBytes, err := base64.StdEncoding.DecodeString(b)
 	if err != nil {
-		fmt.Printf("::error title=Base64 decode failed::PEM secret should be base64 encoded")
+		setFailed("Base64 decode failed", "PEM secret should be base64 encoded")
 		return
 	}
 
-	key, err := LoadPEMFromBytes(pemBytes)
+	key, err := loadPEMFromBytes(pemBytes)
 	if err != nil {
-		fmt.Printf("::error title=PEM invalid::Unable to load PEM %s", err)
-		return
+		setFailed("Invalid PEM key", fmt.Sprintf("Unable to load PEM. err: %s", err))
 	}
 
-	jwt := IssueJWTFromPEM(key)
-
-	fmt.Println(jwt)
-
-	token, err := GetInstallationToken(jwt)
+	jwt := issueJWTFromPEM(appID, key)
+	token, err := getInstallationToken(appInstId, jwt)
 	if err != nil {
-		fmt.Printf("::error title=Installation token error::Unable to get intallation token")
-		//todo handle error
+		setFailed("Failed to get installation key", fmt.Sprintf("Unable to get intallation token. err: %s", err))
 	}
 
-	fmt.Printf("::set-output name=token::%s", *token)
+	setOutput("token", token)
 }
 
-func LoadPEMFromBytes(key []byte) (*rsa.PrivateKey, error) {
+func loadPEMFromBytes(key []byte) (*rsa.PrivateKey, error) {
 	b, _ := pem.Decode(key)
 	if b != nil {
 		key = b.Bytes
@@ -70,4 +57,15 @@ func LoadPEMFromBytes(key []byte) (*rsa.PrivateKey, error) {
 	}
 
 	return parsedKey, nil
+}
+
+func setOutput(name, value string) {
+	// print output to stdout
+	fmt.Printf("::set-output name=%s::%s", name, value)
+}
+
+func setFailed(title, msg string) {
+	// output error to stdout and exit 1
+	fmt.Printf("::error title=%s::%s", title, msg)
+	os.Exit(1)
 }
