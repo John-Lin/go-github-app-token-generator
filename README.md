@@ -1,4 +1,5 @@
 # Golang github app installation access token generator action
+
 A simple github action written in go to retrieve an installation access token for an app installed into an organization.
 There are a lot of other workflows that do the same thing, go use them instead. I created this as I wanted to do it purely in golang.
 
@@ -12,7 +13,7 @@ This action requires three environment variables as inputs.
 
 ## Usage
 
-```
+```yaml
 name: Checkout repos
 on: push
 jobs:
@@ -30,4 +31,4 @@ jobs:
       with:
         repository: owner/repo
         token: ${{ steps.get-token.outputs.token }}
-````
+```
