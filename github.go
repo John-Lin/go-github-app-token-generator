@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-const githubPath = "https://api.github.com/app/installations"
+const githubPath = "app/installations"
 
 // Get installation token from github.
 //
