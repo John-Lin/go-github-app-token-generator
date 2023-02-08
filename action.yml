@@ -13,7 +13,7 @@ inputs:
   base-url:
     description: Base URL of the GitHub. If you are using GitHub enterprise, please configure this.
     required: false
-    default: api.github.com
+    default: https://api.github.com
 outputs:
   token:
     description: Installation access token for the GitHub App
