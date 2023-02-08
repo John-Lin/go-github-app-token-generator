@@ -7,9 +7,13 @@ inputs:
   app-id:
     description: GitHub App ID
     required: true
-  app-installation-id :
+  app-installation-id:
     description: GitHub Installation ID
     required: true
+  base-url:
+    description: Base URL of the GitHub. If you are using GitHub enterprise, please configure this.
+    required: false
+    default: api.github.com
 outputs:
   token:
     description: Installation access token for the GitHub App
@@ -20,6 +24,7 @@ runs:
     - ${{ inputs.app-private-key }}
     - ${{ inputs.app-id }}
     - ${{ inputs.app-installation-id }}
+    - ${{ inputs.base-url }}
 author: mlioo
 branding:
   icon: zap
