@@ -25,6 +25,11 @@ func main() {
 		setFailed("App installation ID not set", "Environment variable APP_INSTALLATION_ID is not set")
 	}
 
+	baseURL, ok := os.LookupEnv("BASE_URL")
+	if !ok {
+		setFailed("Base url is missing", "Environment variable BASE_URL is not set")
+	}
+
 	pemBytes, err := base64.StdEncoding.DecodeString(b)
 	if err != nil {
 		setFailed("Base64 decode failed", "PEM secret should be base64 encoded")
@@ -37,7 +42,7 @@ func main() {
 	}
 
 	jwt := issueJWTFromPEM(appID, key)
-	token, err := getInstallationToken(appInstId, jwt)
+	token, err := getInstallationToken(baseURL, appInstId, jwt)
 	if err != nil {
 		setFailed("Failed to get installation key", fmt.Sprintf("Unable to get intallation token. err: %s", err))
 	}

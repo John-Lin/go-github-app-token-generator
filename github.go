@@ -10,23 +10,24 @@ import (
 	"time"
 )
 
-const githubURL = "https://api.github.com/app/installations"
+const githubPath = "https://api.github.com/app/installations"
 
-//  Get installation token from github.
+// Get installation token from github.
 //
-//  curl -i -X POST -H "Authorization: Bearer $TOKEN" -H "Accept: " https://api.github.com/app/installations/19557896/access_tokens
-// {
-//   "token": "asdf",
-//   "expires_at": "2021-09-17T14:00:44Z",
-//   "permissions": {
-//     "contents": "read",
-//     "metadata": "read",
-//     "pull_requests": "write"
-//   },
-//   "repository_selection": "selected"
-// }
-func getInstallationToken(appInstID, token string) (string, error) {
-	u := strings.Join([]string{githubURL, appInstID, "access_tokens"}, "/")
+// curl -i -X POST -H "Authorization: Bearer $TOKEN" -H "Accept: " https://api.github.com/app/installations/19557896/access_tokens
+//
+//	{
+//	  "token": "asdf",
+//	  "expires_at": "2021-09-17T14:00:44Z",
+//	  "permissions": {
+//	    "contents": "read",
+//	    "metadata": "read",
+//	    "pull_requests": "write"
+//	  },
+//	  "repository_selection": "selected"
+//	}
+func getInstallationToken(baseURL, appInstID, token string) (string, error) {
+	u := strings.Join([]string{baseURL, githubPath, appInstID, "access_tokens"}, "/")
 
 	var resBody struct {
 		Token       string    `json:"token"`
