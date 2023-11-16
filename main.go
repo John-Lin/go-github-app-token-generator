@@ -66,7 +66,7 @@ func loadPEMFromBytes(key []byte) (*rsa.PrivateKey, error) {
 
 func setOutput(name, value string) {
 	// print output to stdout
-	fmt.Printf("::set-output name=%s::%s", name, value)
+	fmt.Printf("{%s}={%s} >> $GITHUB_OUTPUT", name, value)
 }
 
 func setFailed(title, msg string) {
